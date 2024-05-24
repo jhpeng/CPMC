@@ -162,6 +162,27 @@ void remove_vertices(world_line* w) {
     w->flag = !(w->flag);
 }
 
+/**
+ * This function performs random swaps of vertex types within a conditional-path according to specific rules based on the type of bond.
+ * It's used in the simulation to introduce randomness and to explore different configurations in the phase space of the model.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure representing the simulation's current state.
+ *   m (model*): Pointer to the model structure containing information about the simulation's sites and bonds.
+ *   rng (gsl_rng*): Pointer to a GSL random number generator, used to introduce randomness into the graph swapping process.
+ *
+ * Behavior:
+ *   - The function iterates through each vertex in the active sequence (sequenceA or sequenceB, depending on the flag).
+ *   - For vertices associated with bonds of types 1, 3, and 5 or types 2, 4, and 6, it randomly assigns a new bond of the same general type
+ *     (odd or even) based on a uniformly distributed random value.
+ *   - For vertices associated with bond types 7 or 8, it randomly adjusts the bond by adding or subtracting the number of nodes,
+ *     effectively swapping between these two types.
+ *   - These swaps are designed to maintain the overall connectivity and type balance of the graph while exploring new configurations.
+ *
+ * Outputs:
+ *   - The function modifies the bonds of vertices in the active conditional-path sequence directly, altering the graph structure used in
+ *     subsequent simulation steps.
+ */
 void swapping_graphs(world_line* w, model* m, gsl_rng* rng) {
     int nnode = m->nsite;
     int nedge = (m->nbond-3*nnode)/7;

@@ -283,6 +283,35 @@ void save_configuration(FILE* file, world_line* w, model* m, double* time_list, 
     }
 }
 
+/**
+ * This function performs measurements for a stochastic simulation of an epidemic model using a CPMC algorithm.
+ * It updates statistical measures of the simulation such as the average number of infections, recoveries, and the total infected time.
+ * Additionally, it handles file outputs for recording simulation data across different stages of the simulation process.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure containing the state of the simulation.
+ *   m (model*): Pointer to the model structure containing the parameters and state of the epidemic model.
+ *   time_list (double*): Array of time points at which measurements are taken.
+ *   ntime (int): Number of time points in time_list.
+ *   block_size (int): Number of simulation updates per measurement block.
+ *
+ * Detailed Behavior:
+ *   - The function initializes memory for storing infected ratios and times if not already done.
+ *   - It goes through all vertices in the sequence (either sequenceA or sequenceB based on the world_line flag),
+ *     updating the state of nodes and computing the total infected time and the number of infections.
+ *   - After processing all vertices, it computes the infected ratio for the remaining times in the time_list.
+ *   - Every block_size number of measurements, it writes out averaged results to files and resets the averages for the next block.
+ *   - It also calculates the total running time for each block and logs this information.
+ *
+ * Outputs:
+ *   - This function writes to several files:
+ *     - 'conf.txt': Configuration data of the conditional-path.
+ *     - 'times.txt': Times at which measurements were taken.
+ *     - 'series.txt': Infected ratios over time.
+ *     - 'global.txt': Global averages of infection and recovery counts, and total infected time.
+ *   - Additionally, it prints the infected ratio over time to the standard output and logs the time taken for each block.
+ */
+
 static time_t start_time,end_time;
 static unsigned long int measurement_count=0;
 static double* infected_ratio=NULL;
@@ -421,7 +450,7 @@ void measurement(world_line* w, model* m, double* time_list, int ntime, int bloc
 }
 
 /**
- * This is the main function for a stochastic simulation of an epidemic using a world-line algorithm.
+ * This is the main function for a stochastic simulation of an epidemic using a CPMC algorithm.
  * The function takes various command-line arguments to control the parameters of the epidemic model,
  * the simulation environment, and the system configuration.
  *

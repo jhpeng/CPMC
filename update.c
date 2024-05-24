@@ -104,6 +104,24 @@ double nrecover_value() {
     return nrecover;
 }
 
+/**
+ * This function removes vertices from the conditional-path of the simulation that do not contribute to state changes.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure that represents the current state of the system.
+ *
+ * Behavior:
+ *   - The function iterates over all vertices in the active sequence (either sequenceA or sequenceB, depending on the flag).
+ *   - It checks each vertex to determine if it causes a change in the state of any spins. A vertex is retained if it changes the state
+ *     of at least one spin; otherwise, it is removed.
+ *   - Counters for the number of infection and recovery events (ninfection and nrecover) are updated based on the types of vertices
+ *     that are retained.
+ *   - The function toggles the active sequence flag at the end, swapping the roles of sequenceA and sequenceB for the next operation.
+ *
+ * Outputs:
+ *   - The function modifies the world_line structure in-place, reducing the number of vertices and potentially altering which sequence
+ *     is active. It also updates global counters for the number of infections and recoveries observed.
+ */
 void remove_vertices(world_line* w) {
     vertex* v;
 

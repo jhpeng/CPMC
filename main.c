@@ -420,6 +420,51 @@ void measurement(world_line* w, model* m, double* time_list, int ntime, int bloc
     }
 }
 
+/**
+ * This is the main function for a stochastic simulation of an epidemic using a world-line algorithm.
+ * The function takes various command-line arguments to control the parameters of the epidemic model,
+ * the simulation environment, and the system configuration.
+ *
+ * Command-line arguments:
+ *   argv[1] - alpha (double): The rate of infection per contact.
+ *   argv[2] - gamma (double): The recovery rate.
+ *   argv[3] - T (double): The total simulation time.
+ *   argv[4] - nif (int): The threshold number of infections.
+ *   argv[5] - running_mode (int): Determines the running conditions of the simulation.
+ *   argv[6] - block_size (int): The number of updates in each block during the simulation.
+ *   argv[7] - nblock (int): The number of blocks in the simulation.
+ *   argv[8] - thermal (int): The number of thermalization steps before measurement starts.
+ *   argv[9] - nskip (int): The number of updates to skip between measurements.
+ *   argv[10] - seed (unsigned long int): Seed for the random number generator.
+ *
+ * Running modes:
+ *   0 - Patient zero is fixed, and simulation runs until the number of infections exceeds nif.
+ *   1 - Patient zero moves, and simulation runs until the number of infections exceeds nif.
+ *   2 - All nodes start infected, and simulation runs until all nodes recover.
+ *
+ * Outputs:
+ *   The function does not return a value but performs the simulation and can output to files,
+ *   display the status of the simulation, and save snapshots of the final state.
+ *
+ * Details:
+ *   - The simulation initializes an epidemic model on a network read from an edgelist file.
+ *   - It allocates memory for the necessary data structures.
+ *   - Depending on the running mode, initial and final conditions are set, and different types of
+ *     simulations are performed.
+ *   - The system undergoes thermalization before actual measurements begin to ensure it reaches a
+ *     steady state.
+ *   - During the measurement phase, the system state is updated, and statistics are collected after
+ *     a specified number of skips.
+ *   - Optionally, snapshots of the final state can be saved.
+ *   - Finally, all allocated memory is freed and resources are cleaned up.
+ *
+ * This function depends on several external functions for reading the network data, initializing the
+ * model, and handling world-line data structures and simulations. It assumes that these functions are
+ * implemented correctly and available in the project.
+ *
+ * Example Usage:
+ *   ./exe 0.5 1.0 40.0 50 0 10000 100 100000 100 123456
+ */
 int main(int argc, char** argv) {
     char filename[128] = "/hpc/home/jp549/src/ctQMC/C/projects/epidemic/network/test.edgelist";
     double alpha=atof(argv[1]);

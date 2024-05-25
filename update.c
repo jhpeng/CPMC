@@ -105,7 +105,7 @@ double nrecover_value() {
 }
 
 /**
- * This function removes vertices from the conditional-path of the simulation that do not contribute to state changes.
+ * This function removes vertices from the world-line of the simulation that do not contribute to state changes.
  *
  * Parameters:
  *   w (world_line*): Pointer to the world_line structure that represents the current state of the system.
@@ -163,7 +163,7 @@ void remove_vertices(world_line* w) {
 }
 
 /**
- * This function performs random swaps of vertex types within a conditional-path according to specific rules based on the type of bond.
+ * This function performs random swaps of vertex types within a world-line according to specific rules based on the type of bond.
  * It's used in the simulation to introduce randomness and to explore different configurations in the phase space of the model.
  *
  * Parameters:
@@ -180,7 +180,7 @@ void remove_vertices(world_line* w) {
  *   - These swaps are designed to maintain the overall connectivity and type balance of the graph while exploring new configurations.
  *
  * Outputs:
- *   - The function modifies the bonds of vertices in the active conditional-path sequence directly, altering the graph structure used in
+ *   - The function modifies the bonds of vertices in the active world-line sequence directly, altering the graph structure used in
  *     subsequent simulation steps.
  */
 void swapping_graphs(world_line* w, model* m, gsl_rng* rng) {
@@ -233,6 +233,30 @@ void swapping_graphs(world_line* w, model* m, gsl_rng* rng) {
 
 }
 
+/**
+ * This function inserts new vertices into the world-line of the simulation based on a sampling of a uniform sequence,
+ * which is influenced by the model's site weight and the simulation's inverse temperature.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure representing the simulation's current state.
+ *   m (model*): Pointer to the model structure containing information about the system's sites and bonds.
+ *   rng (gsl_rng*): Pointer to a GSL random number generator, used for generating the random positions of new vertices.
+ *
+ * Behavior:
+ *   - The function first adjusts the length of the world-line sequence to accommodate the insertion of new vertices.
+ *   - It copies the current state of the system into a temporary state array.
+ *   - The function iterates over the sampled sequence of insertion times and inserts new vertices at these times
+ *     if they satisfy certain conditions defined by the model's rules for insertion.
+ *   - Each new vertex inserted is initialized with the appropriate bond and state information, and placed in the sequence
+ *     in chronological order.
+ *   - The original vertices are also copied into the new sequence, maintaining their original order.
+ *   - At the end of the function, the sequence with the newly inserted vertices becomes the active sequence.
+ *
+ * Outputs:
+ *   - This function modifies the world_line structure in-place by reallocating its vertex sequence and updating
+ *     the count and arrangement of vertices. It also toggles the flag that determines which of two possible
+ *     vertex sequences is active.
+ */
 void insert_vertices(world_line* w, model* m, gsl_rng* rng) {
     double lam = (m->sweight)*(w->beta);
 

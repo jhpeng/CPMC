@@ -369,6 +369,29 @@ void insert_vertices(world_line* w, model* m, gsl_rng* rng) {
     w->flag = !(w->flag);
 }
 
+/**
+ * This function implements the clustering algorithm for the world-line Monte Carlo simulation,
+ * linking vertices based on their interactions to form clusters.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure representing the current state of the simulation.
+ *   m (model*): Pointer to the model structure containing details about the bonds and rules for linking vertices.
+ *
+ * Behavior:
+ *   - The function initializes the first and last indices for each site to track the start and end of clusters.
+ *   - It iterates through each vertex in the active sequence (sequenceA or sequenceB, depending on the flag).
+ *   - For each vertex, it applies the linking rules defined in the model based on the type of bond associated with the vertex.
+ *   - These rules determine how vertices are connected within the cluster framework, setting up the foundation for collective
+ *     updates during the simulation.
+ *   - The function updates the `cluster` and `weight` arrays in the world_line structure to reflect the connections and weights
+ *     between vertices as dictated by the rules.
+ *   - Optionally (as noted by commented code), it can handle open boundary conditions by linking the first and last vertices
+ *     in each cluster, though this is disabled by default in the provided code snippet.
+ *
+ * Outputs:
+ *   - The function modifies the world_line structure in-place by setting up links between vertices based on the model's rules.
+ *     These links are used in later steps of the simulation to perform updates across connected vertices simultaneously.
+ */
 void clustering(world_line* w, model* m) {
     vertex* v;
     int bond,hNspin,t,idn,idp;
@@ -580,6 +603,28 @@ void cluster_statistic(world_line* w, model* m) {
     fclose(sfile);
 }
 
+/**
+ * This function performs the flip operation on clusters within a world-line Monte Carlo simulation.
+ * It determines whether each cluster will flip its state based on random choices and the cluster's
+ * associated weight.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure representing the current state of the simulation.
+ *   rng (gsl_rng*): Pointer to a GSL random number generator used to introduce randomness in the flip decision.
+ *
+ * Behavior:
+ *   - The function iterates through all vertices in the active sequence (sequenceA or sequenceB, depending on the flag).
+ *   - For each vertex, it processes each leg, determining the root of its cluster and deciding if the cluster's state will flip.
+ *   - The decision to flip is based on the cluster's weight and a random value generated for each cluster.
+ *   - If a cluster is determined to flip, all states in the cluster are inverted.
+ *   - After processing the vertices, it updates the initial and final states of each site in the simulation based on the active sequence
+ *     or random values if no active vertex influences the site.
+ *
+ * Outputs:
+ *   - The function modifies the state arrays within the world-line structure directly, affecting the simulation's subsequent behavior.
+ *   - It also updates the initial and projected state arrays (`istate` and `pstate`) for each site, ensuring that the simulation
+ *     reflects the changes made during this operation.
+ */
 void flip_cluster(world_line* w, gsl_rng* rng) {
     int* state;
     int hNspin,idv,idr,id,p,i,j;

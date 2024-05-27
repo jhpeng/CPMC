@@ -29,6 +29,28 @@ static int weighted_sampling(double* cmf, int length, gsl_rng* rng) {
 }
 #endif
 
+/**
+ * This function samples a sequence of times uniformly over the interval [0, 1), associating each time with a bond index
+ * based on their weights. The sampling is adjusted by a scaling factor to account for variations in bond weights, optimizing
+ * the distribution of sampling times within the given interval.
+ *
+ * Parameters:
+ *   m (model*): Pointer to the model structure containing bond weights and total number of bonds.
+ *   lam (double): The average number of events expected in the interval, used to scale the number of samples.
+ *   start (double): The starting point of the interval for sampling.
+ *   rng (gsl_rng*): Pointer to a GSL random number generator used for generating random values.
+ *
+ * Behavior:
+ *   - Initializes the maximum and average bond weights if they are not already set.
+ *   - Resizes the sampling arrays if the capacity is exceeded, ensuring there is enough space for new samples.
+ *   - Samples times and bond indices based on exponential distribution scaled by the maximum weight divided by the average weight.
+ *   - Continues sampling until the sum of sampled times exceeds 1.0 or the capacity of the array is reached.
+ *   - Adjusts the capacity of the arrays if the number of generated samples exceeds their initial capacity.
+ *
+ * Outputs:
+ *   - Fills the global arrays `insert_seq` and `insert_bond` with sampled times and bond indices respectively.
+ *   - Updates the `insert_len` to reflect the number of entries added to the arrays during the sampling.
+ */
 static double* insert_seq;
 static int* insert_bond;
 static int insert_len=0;

@@ -127,6 +127,30 @@ void clustering(world_line* w, model* m);
  */
 
 void cluster_statistic(world_line* w, model* m);
+/**
+ * This function computes statistics related to clusters within the world-line Monte Carlo simulation, tracking the distribution
+ * and dynamics of clusters over time. It evaluates the ratio of free clusters to total clusters and their respective sizes,
+ * as well as the temporal dynamics of infections.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure representing the simulation's current state and setup.
+ *   m (model*): Pointer to the model structure providing details on bonds and their indices.
+ *
+ * Behavior:
+ *   - Initializes or updates storage arrays for cluster and infection statistics as needed, checking for memory allocation success.
+ *   - Resets counters and accumulators for statistical metrics at the start of computation.
+ *   - Iterates over all vertices in the active sequence to evaluate and update cluster and infection statistics based on the state
+ *     of each vertex and its relationship to others via bonds.
+ *   - Tracks changes in cluster and infection states over time, accumulating data on cluster sizes and the duration of infection states.
+ *   - Computes ratios of free to total clusters and their sizes to assess the dynamism and spread within the simulation.
+ *   - Logs computed statistics to the console and appends detailed records to a file for further analysis.
+ *
+ * Outputs:
+ *   - Modifies global and static variables to store and update statistical data.
+ *   - Outputs to the console for immediate observation of the simulation's state and progression.
+ *   - Writes detailed cluster and infection statistics to a file named 'cluster_statistic.txt' for persistence and later analysis.
+ */
+
 
 void flip_cluster(world_line* w, gsl_rng* rng);
 /**

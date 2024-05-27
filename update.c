@@ -677,6 +677,24 @@ void flip_cluster(world_line* w, gsl_rng* rng) {
     }
 }
 
+/**
+ * This function removes fixed (unchanging) vertices from the world-line of a Monte Carlo simulation.
+ *
+ * Parameters:
+ *   w (world_line*): Pointer to the world_line structure representing the current state and configuration of the simulation.
+ *
+ * Behavior:
+ *   - The function iterates over all vertices in the currently active sequence (either sequenceA or sequenceB, depending on the flag).
+ *   - It examines each vertex to determine if any changes occur across its associated legs or if any of its legs belong to a
+ *     cluster with zero weight, indicating potential for state change.
+ *   - Vertices that exhibit any change in state or are part of a dynamic cluster (non-zero weight) are copied to the other sequence for retention.
+ *   - The count of infection-related and recovery-related vertices is updated based on the type of interaction they represent.
+ *   - This process reduces the number of vertices in the sequence, potentially enhancing performance by focusing computational efforts on dynamic parts of the system.
+ *
+ * Outputs:
+ *   - Modifies the world_line structure in-place, reducing the number of vertices and toggling the active sequence flag to switch between sequences.
+ *   - Updates global counters for the number of infections and recoveries observed during the process.
+ */
 void remove_only_fixed_vertices(world_line* w) {
     int hNspin,idv,idr,i,j,k;
 
